@@ -20,12 +20,12 @@
 #     LICENSE => q[perl]
 #     NAME => q[MancalaWeb]
 #     NO_META => q[1]
-#     PREREQ_PM => { namespace::autoclean=>q[0], Catalyst::Plugin::Static::Simple=>q[0], ExtUtils::MakeMaker=>q[6.36], Catalyst::Plugin::ConfigLoader=>q[0], Catalyst::Action::RenderView=>q[0], Test::More=>q[0.88], Config::General=>q[0], Catalyst::Runtime=>q[5.90007], Moose=>q[0] }
+#     PREREQ_PM => { namespace::autoclean=>q[0], Catalyst::Plugin::Static::Simple=>q[0], ExtUtils::MakeMaker=>q[6.36], Catalyst::Plugin::ConfigLoader=>q[0], Catalyst::Plugin::StackTrace=>q[0], Data::UUID=>q[0], Catalyst::Action::RenderView=>q[0], Test::More=>q[0.88], Catalyst::Model::MongoDB=>q[0], Config::General=>q[0], Data::Structure::Util=>q[0], Catalyst::Runtime=>q[5.90007], Moose=>q[0] }
 #     VERSION => q[0.01]
 #     VERSION_FROM => q[lib/MancalaWeb.pm]
 #     dist => { PREOP=>q[$(PERL) -I. "-MModule::Install::Admin" -e "dist_preop(q($(DISTVNAME)))"] }
 #     realclean => { FILES=>q[MYMETA.yml] }
-#     test => { TESTS=>q[t/01app.t t/02pod.t t/03podcoverage.t] }
+#     test => { TESTS=>q[t/01app.t t/02pod.t t/03podcoverage.t t/controller_Game.t t/controller_Player.t t/model_Games.t t/model_Players.t t/view_HTML.t t/view_Service.t] }
 
 # --- MakeMaker post_initialize section:
 
@@ -173,7 +173,13 @@ MAN1PODS = script/mancalaweb_cgi.pl \
 	script/mancalaweb_server.pl \
 	script/mancalaweb_test.pl
 MAN3PODS = lib/MancalaWeb.pm \
-	lib/MancalaWeb/Controller/Root.pm
+	lib/MancalaWeb/Controller/Game.pm \
+	lib/MancalaWeb/Controller/Player.pm \
+	lib/MancalaWeb/Controller/Root.pm \
+	lib/MancalaWeb/Model/Games.pm \
+	lib/MancalaWeb/Model/Players.pm \
+	lib/MancalaWeb/View/HTML.pm \
+	lib/MancalaWeb/View/Service.pm
 
 # Where is the Config information that we are using/depend on
 CONFIGDEP = $(PERL_ARCHLIB)$(DFSEP)Config.pm $(PERL_INC)$(DFSEP)config.h
@@ -195,10 +201,31 @@ PERL_ARCHIVE       =
 PERL_ARCHIVE_AFTER = 
 
 
-TO_INST_PM = lib/MancalaWeb.pm \
-	lib/MancalaWeb/Controller/Root.pm
+TO_INST_PM = lib/Mancala.pm \
+	lib/MancalaWeb.pm \
+	lib/MancalaWeb/Controller/Game.pm \
+	lib/MancalaWeb/Controller/Player.pm \
+	lib/MancalaWeb/Controller/Root.pm \
+	lib/MancalaWeb/Model/Games.pm \
+	lib/MancalaWeb/Model/Players.pm \
+	lib/MancalaWeb/View/HTML.pm \
+	lib/MancalaWeb/View/Service.pm
 
-PM_TO_BLIB = lib/MancalaWeb/Controller/Root.pm \
+PM_TO_BLIB = lib/MancalaWeb/Controller/Game.pm \
+	blib/lib/MancalaWeb/Controller/Game.pm \
+	lib/MancalaWeb/Model/Players.pm \
+	blib/lib/MancalaWeb/Model/Players.pm \
+	lib/MancalaWeb/View/HTML.pm \
+	blib/lib/MancalaWeb/View/HTML.pm \
+	lib/MancalaWeb/View/Service.pm \
+	blib/lib/MancalaWeb/View/Service.pm \
+	lib/Mancala.pm \
+	blib/lib/Mancala.pm \
+	lib/MancalaWeb/Controller/Player.pm \
+	blib/lib/MancalaWeb/Controller/Player.pm \
+	lib/MancalaWeb/Model/Games.pm \
+	blib/lib/MancalaWeb/Model/Games.pm \
+	lib/MancalaWeb/Controller/Root.pm \
 	blib/lib/MancalaWeb/Controller/Root.pm \
 	lib/MancalaWeb.pm \
 	blib/lib/MancalaWeb.pm
@@ -428,6 +455,12 @@ manifypods : pure_all  \
 	script/mancalaweb_create.pl \
 	script/mancalaweb_cgi.pl \
 	script/mancalaweb_fastcgi.pl \
+	lib/MancalaWeb/Controller/Game.pm \
+	lib/MancalaWeb/Model/Players.pm \
+	lib/MancalaWeb/View/HTML.pm \
+	lib/MancalaWeb/View/Service.pm \
+	lib/MancalaWeb/Controller/Player.pm \
+	lib/MancalaWeb/Model/Games.pm \
 	lib/MancalaWeb/Controller/Root.pm \
 	lib/MancalaWeb.pm
 	$(NOECHO) $(POD2MAN) --section=1 --perm_rw=$(PERM_RW) \
@@ -437,6 +470,12 @@ manifypods : pure_all  \
 	  script/mancalaweb_cgi.pl $(INST_MAN1DIR)/mancalaweb_cgi.pl.$(MAN1EXT) \
 	  script/mancalaweb_fastcgi.pl $(INST_MAN1DIR)/mancalaweb_fastcgi.pl.$(MAN1EXT) 
 	$(NOECHO) $(POD2MAN) --section=3 --perm_rw=$(PERM_RW) \
+	  lib/MancalaWeb/Controller/Game.pm $(INST_MAN3DIR)/MancalaWeb::Controller::Game.$(MAN3EXT) \
+	  lib/MancalaWeb/Model/Players.pm $(INST_MAN3DIR)/MancalaWeb::Model::Players.$(MAN3EXT) \
+	  lib/MancalaWeb/View/HTML.pm $(INST_MAN3DIR)/MancalaWeb::View::HTML.$(MAN3EXT) \
+	  lib/MancalaWeb/View/Service.pm $(INST_MAN3DIR)/MancalaWeb::View::Service.$(MAN3EXT) \
+	  lib/MancalaWeb/Controller/Player.pm $(INST_MAN3DIR)/MancalaWeb::Controller::Player.$(MAN3EXT) \
+	  lib/MancalaWeb/Model/Games.pm $(INST_MAN3DIR)/MancalaWeb::Model::Games.$(MAN3EXT) \
 	  lib/MancalaWeb/Controller/Root.pm $(INST_MAN3DIR)/MancalaWeb::Controller::Root.$(MAN3EXT) \
 	  lib/MancalaWeb.pm $(INST_MAN3DIR)/MancalaWeb.$(MAN3EXT) 
 
@@ -493,17 +532,11 @@ $(INST_SCRIPT)/mancalaweb_fastcgi.pl : script/mancalaweb_fastcgi.pl $(FIRST_MAKE
 
 # --- MakeMaker subdirs section:
 
-# The default clean, realclean and test targets in this Makefile
-# have automatically been given entries for each subdir.
-
-
-subdirs ::
-	$(NOECHO) cd view && $(MAKE) $(USEMAKEFILE) $(FIRST_MAKEFILE) all $(PASTHRU)
-
+# none
 
 # --- MakeMaker clean_subdirs section:
 clean_subdirs :
-	$(ABSPERLRUN)  -e 'chdir '\''view'\'';  system '\''$(MAKE) clean'\'' if -f '\''$(FIRST_MAKEFILE)'\'';' --
+	$(NOECHO) $(NOOP)
 
 
 # --- MakeMaker clean section:
@@ -526,8 +559,8 @@ clean :: clean_subdirs
 	  core.*perl.*.? $(MAKE_APERL_FILE) \
 	  $(BASEEXT).def perl \
 	  core.[0-9][0-9][0-9] mon.out \
-	  lib$(BASEEXT).def perl.exe \
-	  perlmain.c so_locations \
+	  lib$(BASEEXT).def perlmain.c \
+	  perl.exe so_locations \
 	  $(BASEEXT).exp 
 	- $(RM_RF) \
 	  blib 
@@ -536,8 +569,7 @@ clean :: clean_subdirs
 
 # --- MakeMaker realclean_subdirs section:
 realclean_subdirs :
-	- $(ABSPERLRUN)  -e 'chdir '\''view'\'';  system '\''$(MAKE) $(USEMAKEFILE) $(MAKEFILE_OLD) realclean'\'' if -f '\''$(MAKEFILE_OLD)'\'';' --
-	- $(ABSPERLRUN)  -e 'chdir '\''view'\'';  system '\''$(MAKE) $(USEMAKEFILE) $(FIRST_MAKEFILE) realclean'\'' if -f '\''$(FIRST_MAKEFILE)'\'';' --
+	$(NOECHO) $(NOOP)
 
 
 # --- MakeMaker realclean section:
@@ -809,7 +841,7 @@ $(MAP_TARGET) :: static $(MAKE_APERL_FILE)
 $(MAKE_APERL_FILE) : $(FIRST_MAKEFILE) pm_to_blib
 	$(NOECHO) $(ECHO) Writing \"$(MAKE_APERL_FILE)\" for this $(MAP_TARGET)
 	$(NOECHO) $(PERLRUNINST) \
-		Makefile.PL DIR=view \
+		Makefile.PL DIR= \
 		MAKEFILE=$(MAKE_APERL_FILE) LINKTYPE=static \
 		MAKEAPERL=1 NORECURS=1 CCCDLFLAGS=
 
@@ -819,7 +851,7 @@ $(MAKE_APERL_FILE) : $(FIRST_MAKEFILE) pm_to_blib
 TEST_VERBOSE=0
 TEST_TYPE=test_$(LINKTYPE)
 TEST_FILE = test.pl
-TEST_FILES = t/01app.t t/02pod.t t/03podcoverage.t
+TEST_FILES = t/01app.t t/02pod.t t/03podcoverage.t t/controller_Game.t t/controller_Player.t t/model_Games.t t/model_Players.t t/view_HTML.t t/view_Service.t
 TESTDB_SW = -d
 
 testdb :: testdb_$(LINKTYPE)
@@ -828,9 +860,6 @@ test :: $(TEST_TYPE) subdirs-test
 
 subdirs-test ::
 	$(NOECHO) $(NOOP)
-
-subdirs-test ::
-	$(NOECHO) cd view && $(MAKE) test $(PASTHRU)
 
 
 test_dynamic :: pure_all
@@ -853,10 +882,14 @@ ppd :
 	$(NOECHO) $(ECHO) '    <AUTHOR>Greg Hellings,,,</AUTHOR>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <IMPLEMENTATION>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Catalyst::Action::RenderView" />' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Catalyst::Model::MongoDB" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Catalyst::Plugin::ConfigLoader" />' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Catalyst::Plugin::StackTrace" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Catalyst::Plugin::Static::Simple" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Catalyst::Runtime" VERSION="5.90007" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Config::General" />' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Data::Structure::Util" />' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Data::UUID" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Moose::" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="namespace::autoclean" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <ARCHITECTURE NAME="x86_64-linux-gnu-thread-multi-5.14" />' >> $(DISTNAME).ppd
@@ -869,6 +902,13 @@ ppd :
 
 pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
 	$(NOECHO) $(ABSPERLRUN) -MExtUtils::Install -e 'pm_to_blib({@ARGV}, '\''$(INST_LIB)/auto'\'', q[$(PM_FILTER)], '\''$(PERM_DIR)'\'')' -- \
+	  lib/MancalaWeb/Controller/Game.pm blib/lib/MancalaWeb/Controller/Game.pm \
+	  lib/MancalaWeb/Model/Players.pm blib/lib/MancalaWeb/Model/Players.pm \
+	  lib/MancalaWeb/View/HTML.pm blib/lib/MancalaWeb/View/HTML.pm \
+	  lib/MancalaWeb/View/Service.pm blib/lib/MancalaWeb/View/Service.pm \
+	  lib/Mancala.pm blib/lib/Mancala.pm \
+	  lib/MancalaWeb/Controller/Player.pm blib/lib/MancalaWeb/Controller/Player.pm \
+	  lib/MancalaWeb/Model/Games.pm blib/lib/MancalaWeb/Model/Games.pm \
 	  lib/MancalaWeb/Controller/Root.pm blib/lib/MancalaWeb/Controller/Root.pm \
 	  lib/MancalaWeb.pm blib/lib/MancalaWeb.pm 
 	$(NOECHO) $(TOUCH) pm_to_blib
@@ -918,14 +958,14 @@ installdeps_notest ::
 	$(NOECHO) $(NOOP)
 
 upgradedeps ::
-	$(PERL) Makefile.PL --config= --upgradedeps=Test::More,0.88,Catalyst::Runtime,5.90007,Catalyst::Plugin::ConfigLoader,0,Catalyst::Plugin::Static::Simple,0,Catalyst::Action::RenderView,0,Moose,0,namespace::autoclean,0,Config::General,0
+	$(PERL) Makefile.PL --config= --upgradedeps=Test::More,0.88,Catalyst::Runtime,5.90007,Catalyst::Plugin::ConfigLoader,0,Catalyst::Plugin::Static::Simple,0,Catalyst::Plugin::StackTrace,0,Catalyst::Action::RenderView,0,Catalyst::Model::MongoDB,0,Data::UUID,0,Data::Structure::Util,0,Moose,0,namespace::autoclean,0,Config::General,0
 
 upgradedeps_notest ::
-	$(PERL) Makefile.PL --config=notest,1 --upgradedeps=Test::More,0.88,Catalyst::Runtime,5.90007,Catalyst::Plugin::ConfigLoader,0,Catalyst::Plugin::Static::Simple,0,Catalyst::Action::RenderView,0,Moose,0,namespace::autoclean,0,Config::General,0
+	$(PERL) Makefile.PL --config=notest,1 --upgradedeps=Test::More,0.88,Catalyst::Runtime,5.90007,Catalyst::Plugin::ConfigLoader,0,Catalyst::Plugin::Static::Simple,0,Catalyst::Plugin::StackTrace,0,Catalyst::Action::RenderView,0,Catalyst::Model::MongoDB,0,Data::UUID,0,Data::Structure::Util,0,Moose,0,namespace::autoclean,0,Config::General,0
 
 listdeps ::
 	@$(PERL) -le "print for @ARGV" 
 
 listalldeps ::
-	@$(PERL) -le "print for @ARGV" Test::More Catalyst::Runtime Catalyst::Plugin::ConfigLoader Catalyst::Plugin::Static::Simple Catalyst::Action::RenderView Moose namespace::autoclean Config::General
+	@$(PERL) -le "print for @ARGV" Test::More Catalyst::Runtime Catalyst::Plugin::ConfigLoader Catalyst::Plugin::Static::Simple Catalyst::Plugin::StackTrace Catalyst::Action::RenderView Catalyst::Model::MongoDB Data::UUID Data::Structure::Util Moose namespace::autoclean Config::General
 

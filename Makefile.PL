@@ -8,6 +8,7 @@ use Module::Install::Catalyst; # Complain loudly if you don't have
 
 name 'MancalaWeb';
 all_from 'lib/MancalaWeb.pm';
+all_from 'lib/Mancala.pm';
 
 requires 'Catalyst::Runtime' => '5.90007';
 requires 'Catalyst::Plugin::ConfigLoader';

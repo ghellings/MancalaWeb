@@ -37,15 +37,17 @@ Creates a new game object and returns packed hash of it
 
 sub create {
     my ($self,$player1, $player2) = @_;
-    print Dumper \$player1, \$player2;
     # Create new game object
+    print Dumper \$player1, \$player2;
     my $game = Mancala::Game->new( player1 => $player1, player2 => $player2 );
     # build board
     $game->board;
+    # clone game
+    my $copy_of_game = $game->clone;
     # pack game into hash
-    my $game_hash = $game->pack;
+    $copy_of_game->pack;
     # save game in mongo
-    my $oid = $self->collection->insert($game_hash);
+    my $oid = $self->collection->insert($copy_of_game);
     # get oid from mongo to use to create new UUID for gameid
     my $ug = Data::UUID->new;
     my $gameid = $ug->create_from_name_str("Game",$oid);
@@ -54,8 +56,8 @@ sub create {
     # update game object with gameid
     $game->gameid($gameid);
     # pack game into hash for return
-    my $return_data = $game->pack;
-    return $return_data;
+    $game->pack;
+    return $game;
 }
 
 =head2 fetch_game_obj
@@ -67,6 +69,7 @@ Get game object from mongo and return object
 sub fetch_game_obj {
     my ( $self, $gameid ) = @_;
     my $gamedata = $self->collection->find_one( { gameid => $gameid } );
+    print Dumper \$gamedata;
     my $game = Mancala::Game->unpack( $gamedata );
     return $game;
 }

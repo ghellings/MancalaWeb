@@ -59,6 +59,7 @@ sub create {
     }
     # Turn player into hash
     my $return_data = $player->pack;
+    print Dumper \$return_data; 
     return $return_data;
 }
 
@@ -71,6 +72,7 @@ sub fetch_player_obj {
     # Find player in mongo
     my $playerdata = $self->collection->find_one( { playerid => $playerid } );
     print "Mongo Lookup\n";
+    print Dumper \$playerdata;
     # Unpack object
     my $player = Mancala::Player->unpack( $playerdata );
     return $player;
